@@ -73,7 +73,6 @@ def multinomial_pmf(sample, probabilities):
 
 
 def main():
-    '''
     arg_parser = ArgumentParser()
     arg_parser.add_argument('INPUT_FILE', help='A file containing whitespace-delimited words')
     arg_parser.add_argument('SW_FILE', help='A file containing whitespace-delimited stopwords')
@@ -81,17 +80,9 @@ def main():
                             help='How many of the most frequent words to consider')
     args = arg_parser.parse_args()
 
-
     words = get_words(args.INPUT_FILE)
     stopwords = set(get_words(args.SW_FILE))
     probabilities = get_probabilities(words, stopwords, args.k)
-    '''
-    input_file = "shakespeare.txt"
-    stop_words = "stopwords.txt"
-    k = 5
-    words = get_words(input_file)
-    stopwords = set(get_words(stop_words))
-    probabilities = get_probabilities(words, stopwords, k)
 
     # we should have k probabilities
     # assert len(probabilities) == args.k
