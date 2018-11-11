@@ -16,7 +16,7 @@ python3 multinomial_template.py [arguments]
 To run the script and notebook with pipenv as dependency manager
 run the following commands:
 ```shell
-pipenv run assignment02/multinomial_template.py [arguments]
+pipenv run python3 assignment02/multinomial_template.py [arguments]
 # or
 pipenv run jupyter notebook
 # then use jupyter notebook as usual
