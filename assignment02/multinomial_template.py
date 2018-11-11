@@ -85,8 +85,7 @@ def main():
     probabilities = get_probabilities(words, stopwords, args.k)
 
     # we should have k probabilities
-    # assert len(probabilities) == args.k
-    assert len(probabilities) == k
+    assert len(probabilities) == args.k
 
     # check if all p_i sum to 1 (accounting for some rounding error)
     assert 1 - 1e-12 <= sum(probabilities.values()) <= 1 + 1e-12
