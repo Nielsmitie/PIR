@@ -17,14 +17,31 @@ def get_sentences(file_path):
 
 def get_top_k_words(sentences, k):
     """Return the k most frequent words as a list."""
-    # TODO
-    return []
+    words_dic = {}
+    for sentence in sentences:
+        words = sentence.split(' ')
+
+        for word in words:
+            if not word in words_dic:
+                words_dic[word] = 0
+            words_dic[word] += 1
+
+    import operator
+    sorted_x = sorted(words_dic.items(), key=operator.itemgetter(1), reverse=True)
+
+    sorted_tuple = sorted_x[:k]
+    return [x[0] for x in sorted_tuple]
 
 
 def encode(sentence, vocabulary):
     """Return a vector encoding the sentence."""
-    # TODO
-    return np.asarray([])
+    words = sentence.split(' ')
+    counter = dict(zip(vocabulary, [0]*len(vocabulary)))
+    for word in words:
+        if word in vocabulary:
+            counter[word] += 1
+
+    return np.asarray(list(counter.values()))
 
 
 def get_top_l_sentences(sentences, query, vocabulary, l):
@@ -35,17 +52,32 @@ def get_top_l_sentences(sentences, query, vocabulary, l):
     Return the top-l most similar sentences as a list of tuples of the form
     (similarity, sentence).
     """
-    # TODO
-    return []
+    query_vec = encode(query, vocabulary)
+
+    result_dict = dict(zip(sentences, [0]*len(sentences)))
+
+    for sentence in sentences:
+        sentence_vec = encode(sentence, vocabulary)
+
+        similarity = cosine_sim(sentence_vec, query_vec)
+
+        result_dict[sentence] = similarity
+
+    import operator
+    sorted_x = sorted(result_dict.items(), key=operator.itemgetter(1), reverse=True)
+
+    return sorted_x[:l]
 
 
 def cosine_sim(u, v):
     """Return the cosine similarity of u and v."""
-    # TODO
-    return 0
+    a = np.linalg.norm(u)
+    b = np.linalg.norm(v)
+    return np.dot(u, v) / (a * b)
 
 
 def main():
+    '''
     arg_parser = ArgumentParser()
     arg_parser.add_argument('INPUT_FILE', help='An input file containing sentences, one per line')
     arg_parser.add_argument('QUERY', help='The query sentence')
@@ -70,6 +102,22 @@ def main():
     for sim, sentence in result:
         print('{:.5f}\t{}'.format(sim, sentence))
 
+    '''
+
+    sentences = get_sentences("shakespeare_sentences.txt")
+    top_k_words = get_top_k_words(sentences, 5)
+
+    query = "hello. and the"
+
+    print('using vocabulary: {}\n'.format(top_k_words))
+    print('using query: {}\n'.format(query))
+
+    with np.errstate(invalid='ignore'):
+        result = get_top_l_sentences(sentences, query, top_k_words, 3)
+
+    print('result:')
+    for sentence, sim in result:
+        print('{:.5f}\t{}'.format(sim, sentence))
 
 if __name__ == '__main__':
     main()
