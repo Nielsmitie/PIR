@@ -6,6 +6,10 @@ collection.tsv
 q5.web.qrels.txt
 cw_index
 index
+shakespeare_sentences.txt
+shakespeare.txt
+stopwords.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
