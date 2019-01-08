@@ -10,6 +10,7 @@ shakespeare_sentences.txt
 shakespeare.txt
 stopwords.txt
 MSLR-WEB10K
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
