@@ -11,6 +11,7 @@ pandas = "*"
 sklearn = "*"
 scipy = "*"
 whoosh = "*"
+gensim = "*"
 
 [dev-packages]
 
