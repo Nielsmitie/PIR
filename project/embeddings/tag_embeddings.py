@@ -35,11 +35,15 @@ class TagEmbedding:
         self.model = Word2Vec(window=5, workers=-1, size=100, min_count=1)
         self.model.build_vocab(self.word_lists)
         self.model.train(self.word_lists, total_examples=self.model.corpus_count, epochs=self.model.iter)
+        self.model = self.model.wv
 
     def search(self, query, top_n=10):
         result_dict = {}
         for word_list, content in zip(self.word_lists, self.word_df.index):
-            result_dict[content] = self.model.wv.n_similarity(query, word_list)
+            word_list = list(filter(lambda x: x in self.model.vocab, word_list))
+            if len(word_list) == 0:
+                continue
+            result_dict[content] = self.model.n_similarity(query, word_list)
 
         sorted_x = sorted(result_dict.items(), key=operator.itemgetter(1), reverse=True)
         # top 10 ids [19834, 98971, 2567, 9046, 13733, 27185, 53041, 68534, 89236, 95470]
