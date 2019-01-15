@@ -4,7 +4,7 @@ import pandas as pd
 import operator
 
 
-class SearchEngine:
+class TagEmbedding:
     '''
     simple search engine. Reads in all bookmarks for each website. The generated embeddings are used to calculate
     the cosine similarities between each site and the query. The top n results are returned by self.search.
