@@ -19,8 +19,11 @@ class SearchEngine:
     Also some evaluation methods should be added.
 
     '''
+
+    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
+
     def __init__(self):
-        self.bookmark_infos = pd.read_csv('data/hetrec2011-delicious-2k/bookmarks.dat',
+        self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
                                           sep='\t',
                                           index_col=['id'],
                                           usecols=['id', 'title'],
@@ -45,14 +48,13 @@ class SearchEngine:
 
         return self.bookmark_infos.loc[top_n]
 
-    @staticmethod
-    def _get_words_by_id():
-        url_tags = pd.read_csv('data/hetrec2011-delicious-2k/bookmark_tags.dat',
+    def _get_words_by_id(self):
+        url_tags = pd.read_csv(self.path + 'bookmark_tags.dat',
                                sep='\t',
                                index_col=['bookmarkID'],
                                usecols=['bookmarkID', 'tagID'])
         url_tags.columns = ['id']
-        id_to_tag = pd.read_csv('data/hetrec2011-delicious-2k/tags.dat',
+        id_to_tag = pd.read_csv(self.path + 'tags.dat',
                                 sep='\t',
                                 index_col=['id'],
                                 usecols=['id', 'value'],
