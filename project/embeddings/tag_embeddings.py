@@ -20,16 +20,17 @@ class TagEmbedding:
 
     '''
 
-    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
+    path = '../data/hackathon_02_hetrec2011-delicious-2k/'
 
     def __init__(self):
         self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
                                           sep='\t',
                                           index_col=['id'],
-                                          usecols=['id', 'title'],
+                                          usecols=['id', 'title', 'urlPrincipal'],
                                           encoding='ISO-8859-15')
 
         self.word_df = self._get_words_by_id()
+        self.bookmark_infos = self.bookmark_infos.join(self.word_df)
         self.word_lists = self.word_df.values.tolist()
 
         self.model = Word2Vec(window=5, workers=-1, size=100, min_count=1)
@@ -52,6 +53,18 @@ class TagEmbedding:
 
         return self.bookmark_infos.loc[top_n]
 
+    def rank(self, query):
+        result_dict = {}
+        for word_list, content in zip(self.word_lists, self.word_df.index):
+            word_list = list(filter(lambda x: x in self.model.vocab, word_list))
+            if len(word_list) == 0:
+                continue
+            result_dict[content] = self.model.n_similarity(query, word_list)
+
+        sorted_x = sorted(result_dict.items(), key=operator.itemgetter(1), reverse=True)
+
+        return pd.DataFrame(sorted_x, columns=['id', 'similarity']).set_index('id').join(self.bookmark_infos)
+
     def _get_words_by_id(self):
         url_tags = pd.read_csv(self.path + 'bookmark_tags.dat',
                                sep='\t',
@@ -68,5 +81,6 @@ class TagEmbedding:
 
         def test(x):
             return [i[0] for i in x.values.tolist()]
-
-        return id_words.groupby(level=0).apply(test)
+        tmp = id_words.groupby(level=0).apply(test)
+        tmp.name = 'words_by_id'
+        return tmp
