@@ -11,6 +11,7 @@ shakespeare.txt
 stopwords.txt
 MSLR-WEB10K
 data/
+*.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
