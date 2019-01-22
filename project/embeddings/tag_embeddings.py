@@ -20,13 +20,13 @@ class TagEmbedding:
 
     '''
 
-    path = '../data/hackathon_02_hetrec2011-delicious-2k/'
+    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
 
     def __init__(self):
         self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
                                           sep='\t',
                                           index_col=['id'],
-                                          usecols=['id', 'title', 'urlPrincipal'],
+                                          usecols=['id', 'title', 'urlPrincipal', 'url'],
                                           encoding='ISO-8859-15')
 
         self.word_df = self._get_words_by_id()
@@ -55,6 +55,10 @@ class TagEmbedding:
 
     def rank(self, query):
         result_dict = {}
+        query = list(filter(lambda x: x in self.model.vocab, query))
+        if len(query) == 0:
+            print('NO RESULTS FOUND')
+            return pd.DataFrame()
         for word_list, content in zip(self.word_lists, self.word_df.index):
             word_list = list(filter(lambda x: x in self.model.vocab, word_list))
             if len(word_list) == 0:
@@ -64,6 +68,25 @@ class TagEmbedding:
         sorted_x = sorted(result_dict.items(), key=operator.itemgetter(1), reverse=True)
 
         return pd.DataFrame(sorted_x, columns=['id', 'similarity']).set_index('id').join(self.bookmark_infos)
+
+    def multiprocessing_rank(self, query):
+        from multiprocessing import Pool
+
+        with Pool(5) as p:
+            results = p.starmap(self.worker, zip(query * len(self.word_lists), self.word_lists))
+
+        result_dict = dict(zip(self.word_df.index, results))
+
+        sorted_x = sorted(result_dict.items(), key=operator.itemgetter(1), reverse=True)
+
+        return pd.DataFrame(sorted_x, columns=['id', 'similarity']).set_index('id').join(self.bookmark_infos)
+
+    def worker(self, query, word_list):
+        word_list = list(filter(lambda x: x in self.model.vocab, word_list))
+        if len(word_list) == 0:
+            return 0
+        tmp = self.model.n_similarity(query, word_list)
+        return tmp
 
     def _get_words_by_id(self):
         url_tags = pd.read_csv(self.path + 'bookmark_tags.dat',
