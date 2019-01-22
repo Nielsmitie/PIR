@@ -1,6 +1,7 @@
 from project.embeddings import tag_embeddings
 from project.embeddings import glove_embeddings
 from project.page_rank import page_rank
+from project.query_expansion import expansion
 
 
 def print_results(df):
