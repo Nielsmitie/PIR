@@ -14,7 +14,7 @@ class GloveEmbedding(TagEmbedding):
         self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
                                           sep='\t',
                                           index_col=['id'],
-                                          usecols=['id', 'title', 'urlPrincipal'],
+                                          usecols=['id', 'title', 'urlPrincipal', 'url'],
                                           encoding='ISO-8859-15')
         # super(GloveEmbedding, self).__init__()
 
