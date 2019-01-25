@@ -28,6 +28,12 @@ class GloveEmbedding(TagEmbedding):
         self.bookmark_infos = self.bookmark_infos.join(self.word_df)
         self.word_lists = self.word_df.values.tolist()
 
+    def queryExp(self, query):
+        expanded_query = self.model.wv.most_similar(positive=query, topn=2)
+
+        for i in range(len(expanded_query)):
+            query.append(expanded_query[i][0])
+        return query
 
 if __name__ == '__main__':
     glove_file = ['../data/glove.6B/glove.6B.100d.txt', '../data/glove.42B.300d.txt', '../data/glove.840B.300d.txt',

@@ -1,7 +1,5 @@
-from project.embeddings import tag_embeddings
 from project.embeddings import glove_embeddings
 from project.page_rank import page_rank
-from project.query_expansion import expansion
 
 
 def print_results(df, i=0):
@@ -29,6 +27,7 @@ if __name__ == '__main__':
         if 'exit' in query:
             break
         query = query.split(' ')
+        query = searcher.queryExp(query)
 
         print('Top 10 Websites:')
 
@@ -57,7 +56,6 @@ if __name__ == '__main__':
         print('End of results')
         print('-'*20)
         print()
-
     print('')
     print('Ending session')
     print('-'*20)

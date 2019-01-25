@@ -39,7 +39,6 @@ class TagEmbedding:
         self.model = self.model.wv
 
     def search(self, query, top_n=10):
-        result_dict = {}
         for word_list, content in zip(self.word_lists, self.word_df.index):
             word_list = list(filter(lambda x: x in self.model.vocab, word_list))
             if len(word_list) == 0:
