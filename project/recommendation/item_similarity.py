@@ -15,7 +15,7 @@ class RecommendationEngine:
         # load website and tags
         self.word_df = self._get_words_by_id()
         # load user and preferences
-        
+
         print('test')
 
     def _get_words_by_id(self):

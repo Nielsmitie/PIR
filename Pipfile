@@ -12,6 +12,7 @@ sklearn = "*"
 scipy = "*"
 whoosh = "*"
 gensim = "*"
+pygmo = "*"
 
 [dev-packages]
 
