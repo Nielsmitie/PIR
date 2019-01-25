@@ -1,7 +1,5 @@
-from project.embeddings import tag_embeddings
 from project.embeddings import glove_embeddings
 from project.page_rank import page_rank
-from project.query_expansion import expansion
 
 
 def print_results(df):
@@ -25,6 +23,7 @@ if __name__ == '__main__':
     while query != 'exit':
         query = input('pose your query:').lower()
         query = query.split(' ')
+        query = searcher.queryExp(query)
 
         print('Top 10 Website titles:')
 
@@ -36,9 +35,7 @@ if __name__ == '__main__':
 
         print_results(top_10)
 
-    expanded_query = expansion.QueryExpansion().queryExp(query)
 
-    print(expansion.QueryExpansion().bm25_weighting(query))
     print('End of results')
     print('-'*20)
 
