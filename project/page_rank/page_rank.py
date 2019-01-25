@@ -14,12 +14,18 @@ class PageRank:
                                     usecols=['bookmarkID', 'tagWeight'])
         self.url_tags = self.url_tags.groupby('bookmarkID').sum()
 
-    def page_rank(self, similarity_ranking, top_k=20):
+    def page_rank(self, similarity_ranking, min_k=20):
         test = self.url_tags.join(similarity_ranking, on=['bookmarkID'])
 
         sorted = test.sort_values(by=['similarity', 'tagWeight'], ascending=False, na_position='last')
-        sorted = sorted.loc[sorted['similarity'] > 0.7].sort_values(by=['tagWeight', 'similarity'], ascending=False)
-        return sorted.iloc[:top_k]
+        min_score = 0.9
+        while True:
+            tmp = sorted.loc[sorted['similarity'] > min_score]
+            if len(tmp.index) > min_k:
+                break
+            min_score -= 0.1
+        sorted = tmp.sort_values(by=['tagWeight', 'similarity'], ascending=False)
+        return sorted
 
 
 if __name__ == '__main__':
