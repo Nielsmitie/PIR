@@ -4,9 +4,10 @@ from project.page_rank import page_rank
 from project.query_expansion import expansion
 
 
-def print_results(df):
+def print_results(df, i=0):
     for index, row in df.iterrows():
-        print('{}\n{}\n{}\n{}'.format(row['title'], row['url'], row['urlPrincipal'], row['words_by_id']))
+        print('{}: {}\n{}\n{}\n{}\n'.format(i, row['title'], row['url'], row['urlPrincipal'], row['words_by_id']))
+        i += 1
 
 
 if __name__ == '__main__':
@@ -20,24 +21,42 @@ if __name__ == '__main__':
 
     print('-'*20)
 
-    print('Welcome to query City:')
-    query = 'start'
-    while query != 'exit':
-        query = input('pose your query:').lower()
+    print('Welcome')
+    print('')
+    query = ['start']
+    while True:
+        query = input('Pose your query: ').lower()
+        if 'exit' in query:
+            break
         query = query.split(' ')
 
-        print('Top 10 Website titles:')
+        print('Top 10 Websites:')
 
         top_results = searcher.rank(query)
         if top_results.empty:
             continue
 
-        top_10 = ranker.page_rank(top_results, top_k=10)
+        top_rank = ranker.page_rank(top_results, min_k=50)
 
-        print_results(top_10)
+        num_of_results = 10
+        start = 0
+        while True:
+            try:
+                print_results(top_rank.iloc[start:num_of_results], i=start+1)
+            except IndexError:
+                print('End of results]')
+                break
+            control = input('Get more results with [+]\nDiscontinue Query with [-]\n: ')
+
+            if control == '+':
+                num_of_results += 10
+                start += 10
+            else:
+                break
 
         print('End of results')
         print('-'*20)
+        print()
 
     print('')
     print('Ending session')
