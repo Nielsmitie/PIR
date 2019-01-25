@@ -27,6 +27,12 @@ class GloveEmbedding(TagEmbedding):
         self.word_df = self._get_words_by_id()
         self.word_lists = self.word_df.values.tolist()
 
+    def queryExp(self, query):
+        expanded_query = self.model.wv.most_similar(positive=query, topn=2)
+
+        for i in range(len(expanded_query)):
+            query.append(expanded_query[i][0])
+        return query
 
 if __name__ == '__main__':
     print(GloveEmbedding().search('firefox'))
