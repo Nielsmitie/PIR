@@ -1,5 +1,6 @@
 from project.embeddings import glove_embeddings
 from project.page_rank import page_rank
+from project.const import file_prefix
 
 
 def print_results(df, i=0):
@@ -14,7 +15,7 @@ if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     print('Loading Search Engine')
 
-    searcher = glove_embeddings.GloveEmbedding('data/glove.6B/glove.6B.100d.txt')
+    searcher = glove_embeddings.GloveEmbedding(file_prefix + 'data/glove.6B/glove.6B.100d.txt')
     ranker = page_rank.PageRank()
 
     print('-'*20)

@@ -3,24 +3,12 @@ from gensim.models import Word2Vec
 import pandas as pd
 import operator
 
+from project.const import file_prefix
+
 
 class TagEmbedding:
-    '''
-    simple search engine. Reads in all bookmarks for each website. The generated embeddings are used to calculate
-    the cosine similarities between each site and the query. The top n results are returned by self.search.
 
-    Features to improve the performance:
-    - Weighting the tags, depending on how many user tagged the site with the same tag
-    - tf-idf weighting, to penalize often used tags
-    - Query expansion
-    - Query expansion based on users with similar behaviour
-    - multiple levels of search and filter methods to improve speed
-
-    Also some evaluation methods should be added.
-
-    '''
-
-    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
+    path = file_prefix + 'data/hackathon_02_hetrec2011-delicious-2k/'
 
     def __init__(self):
         self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
@@ -39,6 +27,7 @@ class TagEmbedding:
         self.model = self.model.wv
 
     def search(self, query, top_n=10):
+        result_dict = {}
         for word_list, content in zip(self.word_lists, self.word_df.index):
             word_list = list(filter(lambda x: x in self.model.vocab, word_list))
             if len(word_list) == 0:

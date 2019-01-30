@@ -6,6 +6,7 @@ from gensim.scripts.glove2word2vec import glove2word2vec
 import pandas as pd
 
 from project.embeddings.tag_embeddings import TagEmbedding
+from project.const import file_prefix
 
 
 class GloveEmbedding(TagEmbedding):
@@ -34,6 +35,7 @@ class GloveEmbedding(TagEmbedding):
         for i in range(len(expanded_query)):
             query.append(expanded_query[i][0])
         return query
+
 
 if __name__ == '__main__':
     glove_file = ['../data/glove.6B/glove.6B.100d.txt', '../data/glove.42B.300d.txt', '../data/glove.840B.300d.txt',

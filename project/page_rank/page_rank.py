@@ -1,11 +1,12 @@
 import pandas as pd
 
 from project.embeddings.tag_embeddings import TagEmbedding
+from project.const import file_prefix
 
 
 class PageRank:
 
-    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
+    path = file_prefix + 'data/hackathon_02_hetrec2011-delicious-2k/'
 
     def __init__(self):
         self.url_tags = pd.read_csv(self.path + 'bookmark_tags.dat',

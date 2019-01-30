@@ -7,7 +7,6 @@ from gensim.summarization.bm25 import BM25
 
 class QueryExpansion(tag_embeddings.TagEmbedding):
 
-
     def __init__(self):
         tag_embeddings.TagEmbedding.__init__(self)
         self.bookmark_infos.dropna(inplace=True)
