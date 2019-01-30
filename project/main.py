@@ -1,5 +1,7 @@
 from project.embeddings import glove_embeddings
 from project.page_rank import page_rank
+from project.recommendation.item_similarity import RecommendationEngine
+import turicreate as tc
 
 
 def print_results(df, i=0):
@@ -16,6 +18,7 @@ if __name__ == '__main__':
 
     searcher = glove_embeddings.GloveEmbedding('data/glove.6B/glove.6B.100d.txt')
     ranker = page_rank.PageRank()
+    recommender = RecommendationEngine()
 
     print('-'*20)
 
@@ -45,13 +48,21 @@ if __name__ == '__main__':
             except IndexError:
                 print('End of results]')
                 break
-            control = input('Get more results with [+]\nDiscontinue Query with [-]\n: ')
-
+            control = input('Get more results with [+]\nDiscontinue Query with [-]\n'
+                            'Get similar website[number of website]\n: ')
             if control == '+':
                 num_of_results += 10
                 start += 10
-            else:
+            elif control == '-':
                 break
+            else:
+                control = int(control)
+                index = top_rank.iloc[[control]].index.values[0]
+                print(index)
+                new_items = recommender.recommend(tc.SArray(data=[control]))
+                temp = new_items.to_numpy()
+                print(new_items)
+                print_results(top_results.loc[temp[2, :]], i=-6)
 
         print('End of results')
         print('-'*20)

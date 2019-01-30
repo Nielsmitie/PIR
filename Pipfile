@@ -13,6 +13,7 @@ scipy = "*"
 whoosh = "*"
 gensim = "*"
 pygmo = "*"
+turicreate = "*"
 
 [dev-packages]
 

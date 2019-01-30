@@ -1,42 +1,36 @@
 import pandas as pd
 import numpy as np
+import turicreate as tc
+import os.path
 
 
 class RecommendationEngine:
 
-    path = '../data/hackathon_02_hetrec2011-delicious-2k/'
+    path = 'data/hackathon_02_hetrec2011-delicious-2k/'
+    save_path = 'data/recommend.model'
 
     def __init__(self):
-        self.bookmark_infos = pd.read_csv(self.path + 'bookmarks.dat',
-                                          sep='\t',
-                                          index_col=['id'],
-                                          usecols=['id', 'title'],
-                                          encoding='ISO-8859-15')
-        # load website and tags
-        self.word_df = self._get_words_by_id()
-        # load user and preferences
 
-        print('test')
+        if os.path.isdir(self.save_path):
 
-    def _get_words_by_id(self):
-        url_tags = pd.read_csv(self.path + 'bookmark_tags.dat',
-                               sep='\t',
-                               index_col=['bookmarkID'],
-                               usecols=['bookmarkID', 'tagID', 'tagWeight'])
-        url_tags.columns = ['id']
-        id_to_tag = pd.read_csv(self.path + 'tags.dat',
-                                sep='\t',
-                                index_col=['id'],
-                                usecols=['id', 'value'],
-                                encoding='ISO-8859-15')
+            self.m2 = tc.load_model(self.save_path)
+        else:
+            sf = tc.SFrame.read_csv(self.path + 'user_taggedbookmarks-timestamps.dat',
+                                    sep='\t',
+                                    usecols=['userID', 'bookmarkID'])
 
-        id_words = url_tags.join(id_to_tag, on=['id']).drop(columns=['id'])
+            # tc item_similarity doesn't support additional information yet. So the results are
+            # pretty stupid
 
-        def test(x):
-            return [i[0] for i in x.values.tolist()]
+            m = tc.item_similarity_recommender.create(sf, user_id='userID', item_id='bookmarkID', target_memory_usage=2863311530)
+            nn = m.get_similar_items()
+            self.m2 = tc.item_similarity_recommender.create(sf, nearest_items=nn, user_id='userID', item_id='bookmarkID', target_memory_usage=2863311530)
+            self.m2.save(self.save_path)
+            print('test')
 
-        return id_words.groupby(level=0).apply(test)
+    def recommend(self, item):
+        return self.m2.get_similar_items(item, k=5)
 
 
 if __name__ == '__main__':
-    RecommendationEngine()
+    RecommendationEngine().recommend()
